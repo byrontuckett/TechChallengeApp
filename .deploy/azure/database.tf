@@ -19,7 +19,7 @@ resource "azurerm_postgresql_server" "postgressql_server" {
   ssl_enforcement_enabled      = false
 
   //Network config
-  # public_network_access_enabled = false
+  public_network_access_enabled = false
 
 }
 

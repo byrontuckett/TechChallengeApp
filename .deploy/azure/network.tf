@@ -91,18 +91,3 @@ resource "azurerm_private_dns_zone_virtual_network_link" "private-vnet-link" {
   private_dns_zone_name = azurerm_private_dns_zone.dns.name
   virtual_network_id    = azurerm_virtual_network.tca-vnet.id
 }
-
-
-# # Private DNS Zone A Record for the DB Server
-# # ----------
-# resource "azurerm_private_dns_a_record" "dns-db-a-record" {
-#   name                = lower(azurerm_postgresql_server.postgressql_server.name)
-#   zone_name           = azurerm_private_dns_zone.dns.name
-#   resource_group_name = azurerm_resource_group.rg.name
-#   ttl                 = 300
-#   records             = [data.azurerm_private_endpoint_connection.endpoint-connection.private_service_connection.0.private_ip_address]
-
-#   depends_on = [
-#     azurerm_postgresql_server.postgressql_server
-#   ]
-# }

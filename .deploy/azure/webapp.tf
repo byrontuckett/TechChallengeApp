@@ -41,9 +41,20 @@ resource "azurerm_app_service" "tca-docker-app" {
 
     # FOR VNET TRAFFIC
     "WEBSITE_VNET_ROUTE_ALL" = 1
-    "WEBSITE_DNS_SERVER" = "168.63.129.16"
+    "WEBSITE_DNS_SERVER"     = "168.63.129.16"
   }
 
   depends_on = [azurerm_postgresql_server.postgressql_server, azurerm_private_dns_zone.dns, azurerm_private_endpoint.pe0]
 
+}
+
+# VNET Integration
+# ---------
+resource "azurerm_app_service_virtual_network_swift_connection" "swift" {
+  app_service_id = azurerm_app_service.tca-docker-app.id
+  subnet_id      = azurerm_subnet.app-snet.id
+
+  depends_on = [
+    azurerm_subnet.app-snet
+  ]
 }
