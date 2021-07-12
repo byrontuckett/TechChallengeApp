@@ -38,8 +38,12 @@ resource "azurerm_app_service" "tca-docker-app" {
     "VTT_DBNAME"     = var.databaseName
     "VTT_LISTENHOST" = "0.0.0.0"
     "VTT_LISTENPORT" = 80
+
+    # FOR VNET TRAFFIC
+    "WEBSITE_VNET_ROUTE_ALL" = 1
+    "WEBSITE_DNS_SERVER" = "168.63.129.16"
   }
 
-  depends_on = [azurerm_postgresql_server.postgressql_server]
+  depends_on = [azurerm_postgresql_server.postgressql_server, azurerm_private_dns_zone.dns, azurerm_private_endpoint.pe0]
 
 }

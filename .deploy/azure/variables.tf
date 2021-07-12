@@ -10,7 +10,7 @@ variable "resourceGroupName" {
 }
 variable "databaseName" {
   type        = string
-  description = "Name of the PostreSQL database"
+  description = "PostreSQL database name"
   default     = "tca_dev"
 }
 variable "sqlServerName" {
@@ -22,7 +22,8 @@ variable "dbUser" {
   type    = string
   default = "sparticus"
 }
+
 variable "dbPassword" {
-  type    = string
-  default = "S3cure5tring!"
+  type        = string
+  description = "provide a secure password for PostreSQL"
 }

@@ -4,7 +4,7 @@ resource "azurerm_postgresql_server" "postgressql_server" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  sku_name = "B_Gen5_2"
+  sku_name = "GP_Gen5_2"
 
   storage_mb                   = 5120
   backup_retention_days        = 7
@@ -32,10 +32,15 @@ resource "azurerm_postgresql_database" "postgressql_db" {
 
 }
 
-resource "azurerm_postgresql_firewall_rule" "firewall_allow_all" {
-  name                = "all_ips"
-  resource_group_name = azurerm_resource_group.rg.name
-  server_name         = azurerm_postgresql_server.postgressql_server.name
-  start_ip_address    = "0.0.0.0"
-  end_ip_address      = "255.255.255.255"
-}
+# resource "azurerm_postgresql_firewall_rule" "firewall_allow_all" {
+#   name                = "all_ips"
+#   resource_group_name = azurerm_resource_group.rg.name
+#   server_name         = azurerm_postgresql_server.postgressql_server.name
+#   start_ip_address    = "0.0.0.0"
+#   end_ip_address      = "255.255.255.255"
+# }
+
+
+## Server name 
+
+# <servername>.
