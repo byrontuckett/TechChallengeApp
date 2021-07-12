@@ -90,8 +90,66 @@ Visit the Application URL (terraform would have output this) and start GTD!
 
 ## Moving Forward
 
+- Terraform remote state for continual state and team collaboration.
 - Implementing Continous Deployment via Azure DevOps
 - Authentication to Azure with a service principal
 - Secrets via Key Vault, pulled into the pipelines as a variable group
 - Connect the Web App to Azure database for PostreSQL with Private Link and remove the insecure firewall rule of allowing 0.0.0.0
-- Terraform remote state
+
+## Terraform State file
+
+_*Shamelessly ripped from julie.io*_
+
+### Storage Account
+
+> Create a storage account to hold this state file.
+
+```sh
+# manual - prefer not to pipeline\iac this.
+az storage account create \
+  --name uniquestoragename \
+  --resource-group workload-shared-rg \
+  --kind StorageV2 \
+  --sku Standard_LRS \
+  --https-only true \
+  --allow-blob-public-access false
+```
+
+### Backend Configuration file
+
+```sh
+# azure.conf, must be in .gitignore
+storage_account_name="uniquestoragename"
+container_name="storagecontainername"
+key="project.tfstate"
+sas_token="?sv=2019-12-12…"
+```
+
+### Testing locally
+
+```sh
+terraform init -backend-config=azure.conf
+```
+
+### Headless
+
+```sh
+# Load secrets from Key Vault
+variables:
+  - group: my-project-awesome-kv
+
+# Initialize with explicitly mapped secrets
+steps:
+- bash: |
+    terraform init \
+      -backend-config="storage_account_name=$TF_STATE_BLOB_ACCOUNT_NAME" \
+      -backend-config="container_name=$TF_STATE_BLOB_CONTAINER_NAME" \
+      -backend-config="key=$TF_STATE_BLOB_FILE" \
+      -backend-config="sas_token=$TF_STATE_BLOB_SAS_TOKEN"
+  displayName: Terraform Init
+  env:
+    TF_STATE_BLOB_ACCOUNT_NAME:   $(kv-tf-state-blob-account)
+    TF_STATE_BLOB_CONTAINER_NAME: $(kv-tf-state-blob-container)
+    TF_STATE_BLOB_FILE:           $(kv-tf-state-blob-file)
+    TF_STATE_BLOB_SAS_TOKEN:      $(kv-tf-state-sas-token)
+```
